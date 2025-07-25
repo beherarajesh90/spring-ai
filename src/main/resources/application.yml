@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: chat-client-api
+  ai:
+    chat:
+      client:
+        enabled: false
+    ollama:
+      chat:
+        model: deepseek-r1:8b
