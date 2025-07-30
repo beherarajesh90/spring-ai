@@ -5,6 +5,7 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 import java.lang.reflect.Type;
 import java.util.List;
@@ -42,4 +43,11 @@ public class ChatClientController {
                 .entity(new ParameterizedTypeReference<List<ActorFilms>>() {});
     }
 
+    @GetMapping("/ai-stream")
+    public Flux<String> streamGeneration(@RequestParam String userInput) {
+        return this.chatClient.prompt()
+                .user(userInput)
+                .stream()
+                .content();
+    }
 }
