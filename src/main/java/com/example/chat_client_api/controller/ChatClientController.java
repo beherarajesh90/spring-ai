@@ -3,7 +3,11 @@ package com.example.chat_client_api.controller;
 import com.example.chat_client_api.entiy.ActorFilms;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.bind.annotation.*;
+
+import java.lang.reflect.Type;
+import java.util.List;
 
 @RestController
 public class ChatClientController {
@@ -28,6 +32,14 @@ public class ChatClientController {
                 .user("Return top 5 Salman Khan movies.")
                 .call()
                 .entity(ActorFilms.class);
+    }
+
+    @GetMapping("/ai-entity-list")
+    public List<ActorFilms> generateListResponse(){
+        return this.chatClient.prompt()
+                .user("Return top 5 Salman Khan movies and Shahrukh Khan movies.")
+                .call()
+                .entity(new ParameterizedTypeReference<List<ActorFilms>>() {});
     }
 
 }
