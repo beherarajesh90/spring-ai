@@ -1,5 +1,6 @@
 package com.example.chat_client_api.controller;
 
+import com.example.chat_client_api.entiy.ActorFilms;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,4 +21,13 @@ public class ChatClientController {
                 .call()
                 .content();
     }
+
+    @GetMapping("/ai-entity")
+    public ActorFilms generateResponse(){
+        return this.chatClient.prompt()
+                .user("Return top 5 Salman Khan movies.")
+                .call()
+                .entity(ActorFilms.class);
+    }
+
 }
