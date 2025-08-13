@@ -1,14 +1,13 @@
 package com.example.chat_client_api.controller;
 
-import com.example.chat_client_api.entiy.ActorFilms;
+import com.example.chat_client_api.entity.Movie;
+import com.example.chat_client_api.entity.ActorFilms;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.converter.BeanOutputConverter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,5 +68,17 @@ public class ChatClientController {
         String content = flux.collectList().block().stream().collect(Collectors.joining());
 
         return converter.convert(content);
+    }
+
+    @GetMapping("/prompt-templates")
+    public List<Movie> promptTemplates(@RequestParam("composer") String composer) {
+        List<Movie> movies = this.chatClient.prompt()
+                .user(u -> u
+                        .text("Tell me the names of 5 movies whose soundtrack was composed by {composer}")
+                        .param("composer", composer))
+                .call()
+                .entity(new ParameterizedTypeReference<List<Movie>>() {
+                });
+        return movies;
     }
 }

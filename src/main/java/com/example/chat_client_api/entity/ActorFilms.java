@@ -1,4 +1,4 @@
-package com.example.chat_client_api.entiy;
+package com.example.chat_client_api.entity;
 
 import java.util.List;
 
