@@ -5,13 +5,13 @@ import com.example.chat_client_api.entity.ActorFilms;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.converter.BeanOutputConverter;
-import org.springframework.ai.ollama.api.OllamaApi;
 import org.springframework.ai.template.st.StTemplateRenderer;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -131,5 +131,16 @@ public class ChatClientController {
                 .chatResponse();
     }
 
+    @GetMapping("/ai/joke")
+    Map<String, String> completion(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message,String voice) {
+        return Map.of(
+                "completion",
+                this.chatClient.prompt()
+                        .system(sp -> sp.param("voice",voice))
+                        .user(message)
+                        .call()
+                        .content()
+        );
+    }
 
 }

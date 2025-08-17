@@ -17,7 +17,7 @@ public class ChatClientConfig {
     @Bean
     public ChatClient chatClientBuilder() {
         return ChatClient.builder(ollamaChatModel)
-                .defaultSystem("You are a friendly chat bot that answers question in the voice of a Pirate")
+                .defaultSystem("You are a friendly chat bot that answers question in the voice of a {voice}")
                 .build();
     }
 }
