@@ -3,8 +3,9 @@ package com.example.chat_client_api.controller;
 import com.example.chat_client_api.entity.Movie;
 import com.example.chat_client_api.entity.ActorFilms;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.prompt.PromptTemplate;
+import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.converter.BeanOutputConverter;
+import org.springframework.ai.ollama.api.OllamaApi;
 import org.springframework.ai.template.st.StTemplateRenderer;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.bind.annotation.*;
@@ -95,4 +96,40 @@ public class ChatClientController {
                 .call()
                 .content();
     }
+
+    /*
+    * returns the ChatResponse object that contains multiple generations and also metadata about the response,
+    * for example how many token were used to create the response.
+    *
+    * Refer docs/ChatClientAPI.md for more details
+    * */
+    @GetMapping("/call-return-chatresponse")
+    public ChatResponse callReturnChatResponse() {
+
+        return this.chatClient.prompt()
+                .user(u -> u
+                        .text("Tell me the names of 5 movies whose soundtrack was composed by <composer>")
+                        .param("composer", "John Williams"))
+                .templateRenderer(StTemplateRenderer.builder().startDelimiterToken('<').endDelimiterToken('>').build())
+                .call()
+                .chatResponse();
+    }
+
+    /*
+    * returns a ChatClientResponse object that contains the ChatResponse object and the ChatClient execution context,
+    * giving you access to additional data used during the execution of advisors (e.g. the relevant documents retrieved
+    * in a RAG flow).
+    * */
+    @GetMapping("/call-return-ChatClientResponse")
+    public ChatResponse chatClientResponse() {
+        return this.chatClient.prompt()
+                .user(u -> u
+                        .text("Tell me the names of 5 movies whose soundtrack was composed by <composer>")
+                        .param("composer", "John Williams"))
+                .templateRenderer(StTemplateRenderer.builder().startDelimiterToken('<').endDelimiterToken('>').build())
+                .call()
+                .chatResponse();
+    }
+
+
 }
