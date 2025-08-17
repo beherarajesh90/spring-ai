@@ -131,6 +131,9 @@ public class ChatClientController {
                 .chatResponse();
     }
 
+    /*
+    * refer docs/ChatClientAPI.md/3 for more details
+    * */
     @GetMapping("/ai/joke")
     Map<String, String> completion(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message,String voice) {
         return Map.of(

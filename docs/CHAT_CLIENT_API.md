@@ -32,3 +32,58 @@ After specifying the `stream()` method on `ChatClient`, there are a few options 
 
 - **`Flux<ChatClientResponse> chatClientResponse()`**  
   Returns a `Flux` of the `ChatClientResponse` object that contains the `ChatResponse` object and the `ChatClient` execution context, giving access to additional data used during the execution of advisors (e.g., relevant documents retrieved in a RAG flow).
+
+# 3. Other Defaults in `ChatClient.Builder`
+
+At the `ChatClient.Builder` level, you can specify the default prompt configuration.
+
+---
+
+### Default Options
+
+- **`defaultOptions(ChatOptions chatOptions)`**  
+  Pass in either portable options defined in the `ChatOptions` class or model-specific options such as those in `OpenAiChatOptions`. For more information on model-specific `ChatOptions` implementations, refer to the JavaDocs.
+
+---
+
+### Default Function(s)
+
+- **`defaultFunction(String name, String description, java.util.function.Function<I, O> function)`**
+  - `name`: Used to refer to the function in user text.
+  - `description`: Explains the function’s purpose and helps the AI model choose the correct function for an accurate response.
+  - `function`: A Java function instance that the model will execute when necessary.
+
+- **`defaultFunctions(String…​ functionNames)`**  
+  The bean names of `java.util.Function`s defined in the application context.
+
+---
+
+### Default User
+
+- **`defaultUser(String text)`**
+- **`defaultUser(Resource text)`**
+- **`defaultUser(Consumer<UserSpec> userSpecConsumer)`**  
+  These methods let you define the user text. The `Consumer<UserSpec>` allows you to use a lambda to specify the user text and any default parameters.
+
+---
+
+### Default Advisors
+
+- **`defaultAdvisors(Advisor…​ advisor)`**  
+  Advisors allow modification of the data used to create the Prompt. The `QuestionAnswerAdvisor` implementation enables the pattern of Retrieval Augmented Generation (RAG) by appending the prompt with context information related to the user text.
+
+- **`defaultAdvisors(Consumer<AdvisorSpec> advisorSpecConsumer)`**  
+  Allows you to define a `Consumer` to configure multiple advisors using the `AdvisorSpec`. Advisors can modify the data used to create the final Prompt. The `Consumer<AdvisorSpec>` lets you specify a lambda to add advisors, such as `QuestionAnswerAdvisor`, which supports RAG by appending the prompt with relevant context information based on the user text.
+
+---
+
+### Overriding Defaults at Runtime
+
+You can override these defaults using the corresponding methods **without the `default` prefix**:
+
+- `options(ChatOptions chatOptions)`
+- `function(String name, String description, java.util.function.Function<I, O> function)`
+- `functions(String…​ functionNames)`
+- `user(String text)`, `user(Resource text)`, `user(Consumer<UserSpec> userSpecConsumer)`
+- `advisors(Advisor…​ advisor)`
+- `advisors(Consumer<AdvisorSpec> advisorSpecConsumer)`
