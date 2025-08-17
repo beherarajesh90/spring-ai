@@ -50,8 +50,13 @@ public class ChatClientController {
 
     @GetMapping("/ai-stream")
     public Flux<String> streamGeneration(@RequestParam String userInput) {
+        SimpleLoggerAdvisor customAdvisor = new SimpleLoggerAdvisor(
+                request -> "Custom request: " + request.prompt().getUserMessage(),
+                response -> "Custom response: " + response.getResult(),
+                0
+        );
         return this.chatClient.prompt()
-                .advisors(new SimpleLoggerAdvisor())
+                .advisors(customAdvisor)
                 .user(userInput)
                 .stream()
                 .content();
