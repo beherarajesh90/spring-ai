@@ -3,7 +3,9 @@ package com.example.chat_client_api.controller;
 import com.example.chat_client_api.entity.Movie;
 import com.example.chat_client_api.entity.ActorFilms;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.converter.BeanOutputConverter;
+import org.springframework.ai.template.st.StTemplateRenderer;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -80,5 +82,17 @@ public class ChatClientController {
                 .entity(new ParameterizedTypeReference<List<Movie>>() {
                 });
         return movies;
+    }
+
+    @GetMapping("/custom-prompt-templates")
+    public String customPromptTemplates() {
+
+        return this.chatClient.prompt()
+                .user(u -> u
+                        .text("Tell me the names of 5 movies whose soundtrack was composed by <composer>")
+                        .param("composer", "John Williams"))
+                .templateRenderer(StTemplateRenderer.builder().startDelimiterToken('<').endDelimiterToken('>').build())
+                .call()
+                .content();
     }
 }
