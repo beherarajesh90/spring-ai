@@ -3,6 +3,7 @@ package com.example.chat_client_api.controller;
 import com.example.chat_client_api.entity.Movie;
 import com.example.chat_client_api.entity.ActorFilms;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.converter.BeanOutputConverter;
 import org.springframework.ai.template.st.StTemplateRenderer;
@@ -50,6 +51,7 @@ public class ChatClientController {
     @GetMapping("/ai-stream")
     public Flux<String> streamGeneration(@RequestParam String userInput) {
         return this.chatClient.prompt()
+                .advisors(new SimpleLoggerAdvisor())
                 .user(userInput)
                 .stream()
                 .content();
@@ -101,7 +103,7 @@ public class ChatClientController {
     * returns the ChatResponse object that contains multiple generations and also metadata about the response,
     * for example how many token were used to create the response.
     *
-    * Refer docs/ChatClientAPI.md for more details
+    * Refer docs/ChatClientAPI.md/1&2 for more details
     * */
     @GetMapping("/call-return-chatresponse")
     public ChatResponse callReturnChatResponse() {

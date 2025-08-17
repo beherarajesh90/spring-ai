@@ -1,6 +1,15 @@
 server:
   port: 8080
 
+logging:
+  level:
+    org:
+      springframework:
+        ai:
+          chat:
+            client:
+              advisor: DEBUG
+
 spring:
   application:
     name: chat-client-api
@@ -11,3 +20,4 @@ spring:
     ollama:
       chat:
         model: gemma
+
