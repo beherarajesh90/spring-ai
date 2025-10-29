@@ -4,6 +4,7 @@ import com.example.chat_client_api.entity.Movie;
 import com.example.chat_client_api.entity.ActorFilms;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
+import org.springframework.ai.chat.memory.MessageWindowChatMemory;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.converter.BeanOutputConverter;
 import org.springframework.ai.template.st.StTemplateRenderer;
@@ -142,15 +143,17 @@ public class ChatClientController {
     * refer docs/ChatClientAPI.md/3 for more details
     * */
     @GetMapping("/ai/joke")
-    Map<String, String> completion(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message,String voice) {
-        return Map.of(
-                "completion",
-                this.chatClient.prompt()
+    Map<String, String> completion(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message,@RequestParam(value = "voice", defaultValue = "Kapil Sharma") String voice) {
+        String response = this.chatClient.prompt()
                         .system(sp -> sp.param("voice",voice))
                         .user(message)
                         .call()
-                        .content()
-        );
+                        .content();
+        if (response == null) {
+            throw new IllegalStateException("Failed to generate response");
+        }
+
+        return Map.of("completion", response);
     }
 
 }
