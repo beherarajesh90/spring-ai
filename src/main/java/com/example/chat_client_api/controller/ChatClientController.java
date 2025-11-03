@@ -1,5 +1,6 @@
 package com.example.chat_client_api.controller;
 
+import com.example.chat_client_api.advisors.ReReadingAdvisor;
 import com.example.chat_client_api.entity.Movie;
 import com.example.chat_client_api.entity.ActorFilms;
 import org.springframework.ai.chat.client.ChatClient;
@@ -154,6 +155,36 @@ public class ChatClientController {
         }
 
         return Map.of("completion", response);
+    }
+
+    @GetMapping("/ai/custom-advisor")
+    public String customSimpleLoggingAdvisor(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message){
+        return this.chatClient.prompt()
+                .user(message)
+                .system(sp ->sp.param("voice", "charlie chaplin"))
+                .advisors(new com.example.chat_client_api.advisors.SimpleLoggerAdvisor())
+                .call()
+                .content();
+    }
+
+    @GetMapping("/ai/custom-advisor-stream")
+    public Flux<String> customSimpleLoggingAdvisorStream(@RequestParam(value = "message", defaultValue = "Tell me a joke") String message){
+        return this.chatClient.prompt()
+                .user(message)
+                .system(sp ->sp.param("voice", "charlie chaplin"))  
+                .advisors(new com.example.chat_client_api.advisors.SimpleLoggerAdvisor())
+                .stream()
+                .content();
+    }
+
+    @GetMapping("/ai/re2")
+    public Flux<String> reReadingAdvisor(@RequestParam(value = "message", defaultValue = "write a hello world program") String message){
+        return this.chatClient.prompt()
+                .user(message)
+                .system(sp ->sp.param("voice", "java"))
+                .advisors(new ReReadingAdvisor())
+                .stream()
+                .content();
     }
 
 }
